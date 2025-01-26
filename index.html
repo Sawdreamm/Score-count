@@ -128,6 +128,10 @@
             background-color: #FF9500; /* 甜甜 */
             color: white;
         }
+        .btn-export {
+            background-color: #4CAF50; /* Green */
+            color: white;
+        }
         .timer {
             font-size: 1.2em;
             margin: 15px 0;
@@ -308,6 +312,7 @@
         </tbody>
     </table>
     <button class="btn-reset" onclick="resetSummary()" style="margin-top: 15px;">รีเซ็ตสรุปผล</button>
+    <button class="btn-export" onclick="exportToCSV()" style="margin-top: 15px;">ส่งออกเป็น CSV</button>
 </div>
 
 <script>
@@ -469,6 +474,26 @@
         if (team === 'B') return `${inputs[3].value} & ${inputs[4].value}`;
         if (team === 'C') return `${inputs[1].value} & ${inputs[2].value}`;
         if (team === 'D') return `${inputs[3].value} & ${inputs[4].value}`;
+    }
+
+    function exportToCSV() {
+        const rows = document.querySelectorAll("#summaryTable tbody tr");
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += "ทีมชนะ,คะแนน,ทีมแพ้,เวลา\n"; // Header
+
+        rows.forEach(row => {
+            const cells = row.querySelectorAll("td");
+            const rowData = Array.from(cells).map(cell => cell.textContent).join(",");
+            csvContent += rowData + "\n";
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "match_results.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 </script>
 </body>
