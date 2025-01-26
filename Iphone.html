@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badminton Score Counter (2 Courts)</title>
+    <style>
+        /* Reset CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #F5F3E5; /* PANTONE® 12-0804 TCX */
+            color: #1d1d1f;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 2.5em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+        }
+        .player-setup {
+            margin-bottom: 20px;
+        }
+        .player-setup input {
+            font-size: 1em;
+            padding: 8px;
+            border: 1px solid #d1d1d6;
+            border-radius: 6px;
+            width: 200px;
+        }
+        .player-setup button {
+            font-size: 1em;
+            padding: 8px 16px;
+            background-color: #007aff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .courts-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1200px;
+            gap: 20px;
+        }
+        .court {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 48%;
+            text-align: center;
+        }
+        .court h2 {
+            font-size: 1.8em;
+            font-weight: 500;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+        }
+        .court h2 input {
+            font-size: 1em;
+            padding: 5px;
+            border: 1px solid #d1d1d6;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .team {
+            margin-bottom: 20px;
+        }
+        .team label {
+            font-size: 1.2em;
+            color: #1d1d1f;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .team input {
+            font-size: 1em;
+            padding: 8px;
+            border: 1px solid #d1d1d6;
+            border-radius: 6px;
+            width: 80%;
+            margin-bottom: 10px;
+        }
+        .score {
+            font-size: 4em;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin: 10px 0;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        button {
+            font-size: 1em;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .btn-plus {
+            background-color: #00AB84; /* PANTONE® GREEN C */
+            color: white;
+        }
+        .btn-minus {
+            background-color: #D22630; /* PANTONE® 20-0076 TPM */
+            color: white;
+        }
+        .btn-reset {
+            background-color: #003366; /* PANTONE® 19-3940 TCX */
+            color: white;
+        }
+        .btn-random {
+            background-color: #FF9500; /* 甜甜 */
+            color: white;
+        }
+        .timer {
+            font-size: 1.2em;
+            margin: 15px 0;
+            color: #1d1d1f;
+        }
+        .timer button {
+            font-size: 0.9em;
+            padding: 8px 16px;
+            background-color: #808080; /* 甜甜 */
+            color: white;
+            margin: 0 5px;
+        }
+        .summary {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 20px;
+        }
+        .summary h2 {
+            font-size: 1.8em;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #1d1d1f;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #d1d1d6;
+        }
+        th {
+            background-color: #f5f5f7;
+            font-weight: 500;
+        }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            .courts-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .court {
+                width: 100%;
+                padding: 15px;
+            }
+            .team input {
+                width: 90%;
+            }
+            .score {
+                font-size: 3em;
+            }
+            .buttons button {
+                font-size: 0.9em;
+                padding: 8px 16px;
+            }
+            .timer button {
+                font-size: 0.8em;
+                padding: 6px 12px;
+            }
+            .summary {
+                padding: 15px;
+            }
+            th, td {
+                padding: 8px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1>Badminton Score Counter (2 Courts)</h1>
+
+<div class="player-setup">
+    <input type="number" id="playerCount" placeholder="จำนวนผู้เล่น" min="8">
+    <button onclick="setupPlayers()">ตั้งค่าผู้เล่น</button>
+</div>
+
+<div id="playerInputs" style="display: none;">
+    <h2>รายชื่อผู้เล่น</h2>
+    <div id="playerList"></div>
+    <button onclick="savePlayers()">บันทึกรายชื่อ</button>
+</div>
+
+<div class="courts-container">
+    <!-- Court 1 -->
+    <div class="court" id="court1">
+        <h2>
+            <input type="text" id="courtName1" placeholder="ชื่อสนาม 1">
+        </h2>
+        <div class="team">
+            <label for="teamA1">ทีม A:</label>
+            <input type="text" id="teamA1" placeholder="ผู้เล่น 1">
+            <input type="text" id="teamA2" placeholder="ผู้เล่น 2">
+            <div class="score" id="scoreA1">0</div>
+            <div class="buttons">
+                <button class="btn-plus" onclick="updateScore(1, 'A', 1)">+</button>
+                <button class="btn-minus" onclick="updateScore(1, 'A', -1)">-</button>
+            </div>
+        </div>
+        <div class="team">
+            <label for="teamB1">ทีม B:</label>
+            <input type="text" id="teamB1" placeholder="ผู้เล่น 3">
+            <input type="text" id="teamB2" placeholder="ผู้เล่น 4">
+            <div class="score" id="scoreB1">0</div>
+            <div class="buttons">
+                <button class="btn-plus" onclick="updateScore(1, 'B', 1)">+</button>
+                <button class="btn-minus" onclick="updateScore(1, 'B', -1)">-</button>
+            </div>
+        </div>
+        <div class="buttons">
+            <button class="btn-random" onclick="randomizeCourt1()">สุ่มทีม A และ B</button>
+        </div>
+        <div class="timer">
+            <span id="timer1">00:00</span>
+            <button onclick="startTimer(1)">เริ่มเวลา</button>
+            <button onclick="stopTimer(1)">หยุดเวลา</button>
+        </div>
+        <button class="btn-reset" onclick="resetCourt(1)">รีเซ็ตสนาม</button>
+    </div>
+
+    <!-- Court 2 -->
+    <div class="court" id="court2">
+        <h2>
+            <input type="text" id="courtName2" placeholder="ชื่อสนาม 2">
+        </h2>
+        <div class="team">
+            <label for="teamC1">ทีม C:</label>
+            <input type="text" id="teamC1" placeholder="ผู้เล่น 5">
+            <input type="text" id="teamC2" placeholder="ผู้เล่น 6">
+            <div class="score" id="scoreC2">0</div>
+            <div class="buttons">
+                <button class="btn-plus" onclick="updateScore(2, 'C', 1)">+</button>
+                <button class="btn-minus" onclick="updateScore(2, 'C', -1)">-</button>
+            </div>
+        </div>
+        <div class="team">
+            <label for="teamD1">ทีม D:</label>
+            <input type="text" id="teamD1" placeholder="ผู้เล่น 7">
+            <input type="text" id="teamD2" placeholder="ผู้เล่น 8">
+            <div class="score" id="scoreD2">0</div>
+            <div class="buttons">
+                <button class="btn-plus" onclick="updateScore(2, 'D', 1)">+</button>
+                <button class="btn-minus" onclick="updateScore(2, 'D', -1)">-</button>
+            </div>
+        </div>
+        <div class="buttons">
+            <button class="btn-random" onclick="randomizeCourt2()">สุ่มทีม C และ D</button>
+        </div>
+        <div class="timer">
+            <span id="timer2">00:00</span>
+            <button onclick="startTimer(2)">เริ่มเวลา</button>
+            <button onclick="stopTimer(2)">หยุดเวลา</button>
+        </div>
+        <button class="btn-reset" onclick="resetCourt(2)">รีเซ็ตสนาม</button>
+    </div>
+</div>
+
+<div class="summary">
+    <h2>สรุปผลการแข่งขัน</h2>
+    <table id="summaryTable">
+        <thead>
+            <tr>
+                <th>ทีมชนะ</th>
+                <th>คะแนน</th>
+                <th>ทีมแพ้</th>
+                <th>เวลา</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <button class="btn-reset" onclick="resetSummary()" style="margin-top: 15px;">รีเซ็ตสรุปผล</button>
+</div>
+
+<script>
+    let scores = {
+        1: { A: 0, B: 0 },
+        2: { C: 0, D: 0 }
+    };
+
+    let timers = {
+        1: { startTime: null, interval: null, elapsed: 0 },
+        2: { startTime: null, interval: null, elapsed: 0 }
+    };
+
+    let matchEnded = { 1: false, 2: false };
+
+    let players = JSON.parse(localStorage.getItem("players")) || [];
+
+    function setupPlayers() {
+        const playerCount = parseInt(document.getElementById("playerCount").value);
+        if (playerCount < 8) {
+            alert("จำนวนผู้เล่นต้องไม่น้อยกว่า 8 คน");
+            return;
+        }
+
+        const playerList = document.getElementById("playerList");
+        playerList.innerHTML = "";
+        for (let i = 1; i <= playerCount; i++) {
+            const input = document.createElement("input");
+            input.type = "text";
+            input.placeholder = 'ผู้เล่น ' + i;
+            input.style.margin = "5px";
+            playerList.appendChild(input);
+        }
+
+        document.getElementById("playerInputs").style.display = "block";
+    }
+
+    function savePlayers() {
+        const inputs = document.querySelectorAll("#playerList input");
+        players = [];
+
+        inputs.forEach(input => {
+            if (input.value.trim() !== "") {
+                players.push(input.value.trim());
+            }
+        });
+
+        const playerCount = parseInt(document.getElementById("playerCount").value);
+        if (players.length < playerCount) {
+            alert('กรุณากรอกชื่อผู้เล่นให้ครบ ' + playerCount + ' คน');
+            return;
+        }
+
+        localStorage.setItem("players", JSON.stringify(players));
+        alert("บันทึกรายชื่อผู้เล่นเรียบร้อย!");
+    }
+
+    function randomizeCourt1() {
+        if (players.length < 8) {
+            alert("กรุณาบันทึกรายชื่อผู้เล่นให้ครบ 8 คนก่อน");
+            return;
+        }
+
+        // สุ่มชื่อผู้เล่น 8 คนที่ไม่ซ้ำกัน
+        const shuffledPlayers = [...players].sort(() => Math.random() - 0.5);
+
+        // กำหนดชื่อผู้เล่นให้กับทีม A และ B
+        document.getElementById('teamA1').value = shuffledPlayers[0]; // ผู้เล่นที่ 1
+        document.getElementById('teamA2').value = shuffledPlayers[1]; // ผู้เล่นที่ 2
+        document.getElementById('teamB1').value = shuffledPlayers[2]; // ผู้เล่นที่ 3
+        document.getElementById('teamB2').value = shuffledPlayers[3]; // ผู้เล่นที่ 4
+    }
+
+    function randomizeCourt2() {
+        if (players.length < 8) {
+            alert("กรุณาบันทึกรายชื่อผู้เล่นให้ครบ 8 คนก่อน");
+            return;
+        }
+
+        // สุ่มชื่อผู้เล่น 8 คนที่ไม่ซ้ำกัน
+        const shuffledPlayers = [...players].sort(() => Math.random() - 0.5);
+
+        // กำหนดชื่อผู้เล่นให้กับทีม C และ D
+        document.getElementById('teamC1').value = shuffledPlayers[4]; // ผู้เล่นที่ 5
+        document.getElementById('teamC2').value = shuffledPlayers[5]; // ผู้เล่นที่ 6
+        document.getElementById('teamD1').value = shuffledPlayers[6]; // ผู้เล่นที่ 7
+        document.getElementById('teamD2').value = shuffledPlayers[7]; // ผู้เล่นที่ 8
+    }
+
+    function updateScore(court, team, points) {
+        if (matchEnded[court]) return;
+        scores[court][team] += points;
+        if (scores[court][team] < 0) scores[court][team] = 0;
+        document.getElementById(`score${team}${court}`).textContent = scores[court][team];
+        if (scores[court][team] >= 21) declareWinner(court, team);
+    }
+
+    function declareWinner(court, team) {
+        if (matchEnded[court]) return;
+        matchEnded[court] = true;
+        const winnerTeam = getTeamName(court, team);
+        const loserTeam = getTeamName(court, team === 'A' ? 'B' : team === 'B' ? 'A' : team === 'C' ? 'D' : 'C');
+        const winnerScore = scores[court][team];
+        const loserScore = scores[court][team === 'A' ? 'B' : team === 'B' ? 'A' : team === 'C' ? 'D' : 'C'];
+        const timeString = stopTimer(court);
+        addToSummary(winnerTeam, winnerScore, loserTeam, loserScore, timeString);
+        alert(`ทีม ${winnerTeam} ชนะ!`);
+    }
+
+    function resetCourt(court) {
+        scores[court] = court === 1 ? { A: 0, B: 0 } : { C: 0, D: 0 };
+        document.querySelectorAll(`#court${court} .score`).forEach(score => score.textContent = 0);
+        document.querySelectorAll(`#court${court} input[type="text"]`).forEach(input => input.value = '');
+        matchEnded[court] = false;
+        stopTimer(court);
+        document.getElementById(`timer${court}`).textContent = '00:00';
+    }
+
+    function startTimer(court) {
+        if (timers[court].interval) {
+            alert("นาฬิกากำลังทำงานอยู่");
+            return;
+        }
+        timers[court].startTime = Date.now() - timers[court].elapsed;
+        timers[court].interval = setInterval(() => {
+            const elapsed = Date.now() - timers[court].startTime;
+            const minutes = Math.floor(elapsed / 60000);
+            const seconds = Math.floor((elapsed % 60000) / 1000);
+            document.getElementById(`timer${court}`).textContent =
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }, 1000);
+    }
+
+    function stopTimer(court) {
+        if (timers[court].interval) {
+            clearInterval(timers[court].interval);
+            timers[court].interval = null;
+            timers[court].elapsed = Date.now() - timers[court].startTime;
+        }
+        return document.getElementById(`timer${court}`).textContent;
+    }
+
+    function addToSummary(winnerTeam, winnerScore, loserTeam, loserScore, time) {
+        const table = document.getElementById('summaryTable').getElementsByTagName('tbody')[0];
+        const row = table.insertRow();
+        row.insertCell(0).textContent = winnerTeam;
+        row.insertCell(1).textContent = `${winnerScore}:${loserScore}`;
+        row.insertCell(2).textContent = loserTeam;
+        row.insertCell(3).textContent = time;
+    }
+
+    function resetSummary() {
+        document.getElementById('summaryTable').getElementsByTagName('tbody')[0].innerHTML = '';
+    }
+
+    function getTeamName(court, team) {
+        const inputs = document.querySelectorAll(`#court${court} input`);
+        if (team === 'A') return `${inputs[1].value} & ${inputs[2].value}`;
+        if (team === 'B') return `${inputs[3].value} & ${inputs[4].value}`;
+        if (team === 'C') return `${inputs[1].value} & ${inputs[2].value}`;
+        if (team === 'D') return `${inputs[3].value} & ${inputs[4].value}`;
+    }
+</script>
+</body>
+</html>
